@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
 import DrawerComponent from './DrawerComponent';
+import Login from './Login';
 
 const styles = {
   root: {
@@ -25,7 +26,7 @@ class NavigationBar extends Component {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Home Bills
             </Typography>
-            <Button color="inherit">Login</Button>
+            <Login />
           </Toolbar>
         </AppBar>
       </div>
