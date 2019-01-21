@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select, MenuItem, InputLabel, Input } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 class SelectFrequency extends Component {
   state = {
@@ -40,6 +41,18 @@ class SelectFrequency extends Component {
     this.setState({ [event.target.name]: event.target.value });
     this.props.onChange(event);
   }
+}
+
+SelectFrequency.propTypes = {
+  name: PropTypes.string,
+  value: PropTypes.string,
+  readOnly: PropTypes.bool,
+  onChange: PropTypes.func
+};
+
+SelectFrequency.defaultProps = {
+  value: "",
+  readOnly: false
 }
 
 export default SelectFrequency;

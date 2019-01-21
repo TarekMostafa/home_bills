@@ -26,7 +26,8 @@ const initialState = {
   freqError: "",
   currError: "",
   startDateError: "",
-  statusError: ""
+  statusError: "",
+  itemsError: ""
 }
 
 class BillDialog extends React.Component {
@@ -138,8 +139,11 @@ class BillDialog extends React.Component {
                 />
               </Grid>
               <Grid item xs={12}>
-                <BillItems name="items" onChange={this.handleItemsChange} value={this.state.items}
-                readOnly={this.isFieldReadOnly()}/>
+                <FormControl fullWidth error={this.state.itemsError !== ""}>
+                  <BillItems name="items" onChange={this.handleItemsChange} value={this.state.items}
+                  readOnly={this.isFieldReadOnly()}/>
+                  <FormHelperText>{this.state.itemsError}</FormHelperText>
+                </FormControl>
               </Grid>
             </Grid>
           </form>
@@ -190,6 +194,11 @@ class BillDialog extends React.Component {
     // Check Bill status
     if(!this.state.status) {
       this.setState({statusError: "Bill status is required"});
+      isValid = false;
+    }
+    // Check Bill Items against transRequired field
+    if(this.state.transRequired==="Yes" && this.state.items.length === 0) {
+      this.setState({itemsError: "At least one item must be entered"});
       isValid = false;
     }
     return isValid;

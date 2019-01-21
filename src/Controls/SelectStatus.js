@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select, MenuItem, InputLabel, Input } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 class SelectStatus extends Component {
   state = {
@@ -38,6 +39,18 @@ class SelectStatus extends Component {
     this.setState({ [event.target.name]: event.target.value });
     this.props.onChange(event);
   }
+}
+
+SelectStatus.propTypes = {
+  name: PropTypes.string,
+  value: PropTypes.string,
+  readOnly: PropTypes.bool,
+  onChange: PropTypes.func
+};
+
+SelectStatus.defaultProps = {
+  value: "",
+  readOnly: false
 }
 
 export default SelectStatus;

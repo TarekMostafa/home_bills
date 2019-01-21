@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select, MenuItem, InputLabel, Input } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 class SelectCurrency extends Component {
   state = {
@@ -41,6 +42,18 @@ class SelectCurrency extends Component {
     this.setState({ [event.target.name]: event.target.value });
     this.props.onChange(event);
   }
+}
+
+SelectCurrency.propTypes = {
+  name: PropTypes.string,
+  value: PropTypes.string,
+  readOnly: PropTypes.bool,
+  onChange: PropTypes.func
+};
+
+SelectCurrency.defaultProps = {
+  value: "",
+  readOnly: false
 }
 
 export default SelectCurrency;

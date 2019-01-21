@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { TextField, Chip, Paper, Grid, InputLabel } from '@material-ui/core';
+import { TextField, Chip, Paper, Grid, FormLabel  } from '@material-ui/core';
 
 const styles = theme => ({
   textField: {
@@ -32,7 +32,7 @@ class Items extends Component {
       <React.Fragment>
         <Grid item xs={12}>
         {
-          this.props.readOnly ? <InputLabel>Items</InputLabel> :
+          this.props.readOnly ? <FormLabel>Items</FormLabel> :
           <TextField name="txtItem" label="Item" className={classes.textField}
             margin="normal" helperText="Type the item and then press enter"
             onKeyPress = { this.onKeyPress }/>
@@ -74,6 +74,15 @@ class Items extends Component {
 
 Items.propTypes = {
   classes: PropTypes.object.isRequired,
+  name: PropTypes.string,
+  value: PropTypes.arrayOf(PropTypes.string),
+  readOnly: PropTypes.bool,
+  onChange: PropTypes.func
 };
+
+Items.defaultProps = {
+  value: [],
+  readOnly: false
+}
 
 export default withStyles(styles)(Items);
