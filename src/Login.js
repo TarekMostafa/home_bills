@@ -17,12 +17,12 @@ class Login extends Component {
       <React.Fragment>
         {this.state.username?
           <React.Fragment>
-          <Tooltip title={this.state.username}>
-            <Avatar><Person color="inherit"/></Avatar>
-          </Tooltip>
-          <ArrowDropDown onClick={this.handleDropDown}/>
-          </React.Fragment>:
-          <Button color="inherit" onClick={this.handleLoginBtn}>{"Login"}</Button>
+            <Tooltip title={this.state.username} onClick={this.handleDropDown}>
+              <Avatar><Person color="inherit"/></Avatar>
+            </Tooltip>
+            <ArrowDropDown onClick={this.handleDropDown}/>
+          </React.Fragment>
+          :<Button color="inherit" onClick={this.handleLoginBtn}>{"Login"}</Button>
         }
         <LoginDialog open={this.state.isLoginDialogOpen} onLogin={this.handleLogin} onClose={this.handleCloseLoginDialog}/>
         <Menu open={this.state.anchorEl!==null} anchorEl={this.state.anchorEl} onClose={this.handleCloseMenu}>

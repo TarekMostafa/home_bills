@@ -15,6 +15,9 @@ const styles = {
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
+  },
+  link: {
+    textDecoration:'none'
   }
 };
 
@@ -24,7 +27,8 @@ class DrawerComponent extends Component {
     items: [
       {id:1, text:'Home Page', link:'/'},
       {id:2, text:''},
-      {id:3, text:'Bills', link:'/bills'}
+      {id:3, text:'Bills', link:'/bills'},
+      {id:4, text:'Bills Transactions', link:'/billsTransactions'}
     ]
   };
 
@@ -42,8 +46,8 @@ class DrawerComponent extends Component {
         <List>
           {
             this.state.items.map((item, index) => item.text ? (
-              <ListItem key={item.id}>
-				          <Link to={item.link}><ListItemText primary={item.text} /></Link>
+              <ListItem button key={item.id}>
+				          <Link to={item.link} className={classes.link}><ListItemText primary={item.text}/></Link>
 			        </ListItem>
               ) : (<Divider key={item.id}/>))
           }

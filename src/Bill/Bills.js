@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Fab, Tooltip } from '@material-ui/core';
+import { Grid, Fab, Tooltip, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
@@ -14,8 +14,8 @@ const styles = theme => ({
   extendedIcon: {
     marginRight: theme.spacing.unit,
   },
-  grow: {
-    flexGrow: 1,
+  typo: {
+    marginTop: theme.spacing.unit,
   }
 });
 
@@ -34,13 +34,17 @@ class BillsComponent extends Component {
     return (
       <React.Fragment>
         <Grid container direction='row'>
-          <h2 className={classes.grow}>Bills</h2>
-          <Tooltip title="Add New Bill" aria-label="Add">
-            <Fab color="primary" aria-label="Add" className={classes.fab}
-              size="small" onClick={this.handleAddBillDialog}>
-              <AddIcon />
-            </Fab>
-          </Tooltip>
+          <Grid item xs={10} align='center'>
+            <Typography variant="h4" className={classes.typo}>Bills</Typography>
+          </Grid>
+          <Grid item xs={2} align='right'>
+            <Tooltip title="Add New Bill" aria-label="Add">
+              <Fab color="primary" aria-label="Add" className={classes.fab}
+                size="small" onClick={this.handleAddBillDialog}>
+                <AddIcon />
+              </Fab>
+            </Tooltip>
+          </Grid>
         </Grid>
         <Grid container alignItems='center' justify='center' direction='column'>
           <BillsTable bills={this.state.bills} onEditBill={this.handleEditBillDialog}
