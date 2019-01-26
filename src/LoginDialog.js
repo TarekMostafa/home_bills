@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions,
           TextField, Grid, Button, InputAdornment } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import Visibility from '@material-ui/icons/Visibility'
+import Visibility from '@material-ui/icons/Visibility';
 
 const initialErrorState = {
   usernameError: "",

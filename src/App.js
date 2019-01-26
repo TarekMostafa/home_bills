@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import NavigationBar from './NavigationBar';
 import Home from './Home';
@@ -13,9 +14,15 @@ class App extends Component {
         <React.Fragment>
           <NavigationBar />
           <Switch>
-            <Route path="/" exact component={Home}></Route>
-            <Route path="/bills" exact component={Bills}></Route>
-            <Route path="/billsTransactions" exact component={BillsTransactions}></Route>
+            {
+              this.props.user ?
+              <React.Fragment>
+                <Route path="/" exact component={Home}></Route>
+                <Route path="/bills" exact component={Bills}></Route>
+                <Route path="/billsTransactions" exact component={BillsTransactions}></Route>
+              </React.Fragment>
+              : <Route path="/" component={Home}></Route>
+            }
           </Switch>
         </React.Fragment>
       </Router>
@@ -23,4 +30,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+	return {
+		user: state.loggedUser
+	}
+}
+
+export default connect(mapStateToProps)(App);

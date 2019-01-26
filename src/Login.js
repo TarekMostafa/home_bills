@@ -1,23 +1,24 @@
 import React, {Component} from 'react';
 import { Button, Avatar, Tooltip, Menu, MenuItem } from '@material-ui/core';
-import Person from '@material-ui/icons/Person'
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown'
+import Person from '@material-ui/icons/Person';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import { connect } from 'react-redux';
 
 import LoginDialog from './LoginDialog';
+import { addLoggedUser, removeLoggedUser } from './Actions/currentUserActions';
 
 class Login extends Component {
   state = {
     isLoginDialogOpen: false,
-    username: null,
     anchorEl: null
   }
 
   render() {
     return (
       <React.Fragment>
-        {this.state.username?
+        {this.props.user?
           <React.Fragment>
-            <Tooltip title={this.state.username} onClick={this.handleDropDown}>
+            <Tooltip title={this.props.user.username} onClick={this.handleDropDown}>
               <Avatar><Person color="inherit"/></Avatar>
             </Tooltip>
             <ArrowDropDown onClick={this.handleDropDown}/>
@@ -45,9 +46,11 @@ class Login extends Component {
   }
 
   handleLogin = (username) => {
+    this.props.addLoggedUser({
+      username: username
+    });
     this.setState({
-      isLoginDialogOpen: false,
-      username
+      isLoginDialogOpen: false
     });
   }
 
@@ -64,12 +67,29 @@ class Login extends Component {
   }
 
   handleLogout = () => {
+    this.props.removeLoggedUser();
     this.setState({
-      anchorEl: null,
-      username: null
+      anchorEl: null
     });
   }
 
 }
 
-export default Login
+const mapStateToProps = (state) => {
+	return {
+		user: state.loggedUser
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		addLoggedUser: (user) => {
+			dispatch(addLoggedUser(user))
+		},
+    removeLoggedUser: (user) => {
+      dispatch(removeLoggedUser())
+    }
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

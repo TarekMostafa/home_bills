@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { connect } from 'react-redux';
 
 import DrawerComponent from './DrawerComponent';
 import Login from './Login';
@@ -22,7 +23,9 @@ class NavigationBar extends Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
-            <DrawerComponent />
+            {
+              this.props.user?<DrawerComponent />:null
+            }
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Home Bills
             </Typography>
@@ -38,4 +41,10 @@ NavigationBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(NavigationBar);
+const mapStateToProps = (state) => {
+	return {
+		user: state.loggedUser
+	}
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(NavigationBar));
