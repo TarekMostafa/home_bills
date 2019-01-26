@@ -5,7 +5,7 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import { connect } from 'react-redux';
 
 import LoginDialog from './LoginDialog';
-import { setLoggedUser } from './Actions/currentUserActions';
+import { setLoggedUser } from './Actions/loggedUserActions';
 
 class Login extends Component {
   state = {
