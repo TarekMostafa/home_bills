@@ -5,7 +5,7 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import { connect } from 'react-redux';
 
 import LoginDialog from './LoginDialog';
-import { addLoggedUser, removeLoggedUser } from './Actions/currentUserActions';
+import { setLoggedUser } from './Actions/currentUserActions';
 
 class Login extends Component {
   state = {
@@ -46,7 +46,7 @@ class Login extends Component {
   }
 
   handleLogin = (username) => {
-    this.props.addLoggedUser({
+    this.props.setLoggedUser({
       username: username
     });
     this.setState({
@@ -67,7 +67,7 @@ class Login extends Component {
   }
 
   handleLogout = () => {
-    this.props.removeLoggedUser();
+    this.props.setLoggedUser(null);
     this.setState({
       anchorEl: null
     });
@@ -83,12 +83,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		addLoggedUser: (user) => {
-			dispatch(addLoggedUser(user))
-		},
-    removeLoggedUser: (user) => {
-      dispatch(removeLoggedUser())
-    }
+		setLoggedUser: (user) => {
+			dispatch(setLoggedUser(user))
+		}
 	}
 }
 

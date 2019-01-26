@@ -1,12 +1,6 @@
-export const addLoggedUser = (user) => {
+export const setLoggedUser = (user) => {
   return {
-    type:'ADD_LOGGED_USER',
+    type:'SET_LOGGED_USER',
     user
-  }
-}
-
-export const removeLoggedUser = () => {
-  return {
-    type:'REMOVE_LOGGED_USER'
   }
 }
