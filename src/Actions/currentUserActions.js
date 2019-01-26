@@ -7,6 +7,6 @@ export const addLoggedUser = (user) => {
 
 export const removeLoggedUser = () => {
   return {
-    type:'ADD_LOGGED_USER'
+    type:'REMOVE_LOGGED_USER'
   }
 }
