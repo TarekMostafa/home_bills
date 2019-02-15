@@ -2,7 +2,7 @@ const initState = {
   loggedUser: null
 }
 
-const rootReducer = (state=initState, action) => {
+const authReducer = (state=initState, action) => {
   if(action.type === "SET_LOGGED_USER") {
     return {
       ...state,
@@ -12,4 +12,4 @@ const rootReducer = (state=initState, action) => {
   return state;
 }
 
-export default rootReducer;
+export default authReducer;
