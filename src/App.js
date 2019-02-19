@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import NavigationBar from './NavigationBar';
+import NavigationBar from './Navigation/NavigationBar';
 import Home from './Home';
 import Bills from './Bill/Bills';
 import BillsTransactions from './Bill/BillsTransactions';

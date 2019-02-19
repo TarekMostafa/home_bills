@@ -5,7 +5,7 @@ import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { connect } from 'react-redux';
 
 import DrawerComponent from './DrawerComponent';
-import Login from './Login';
+import Login from '../Auth/Login';
 
 const styles = {
   root: {
