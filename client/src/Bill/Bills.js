@@ -29,6 +29,12 @@ class BillsComponent extends Component {
     dialogAction: null
   };
 
+  componentDidMount() {
+    fetch('/api/bills')
+      .then(res => res.json())
+      .then(bills => this.setState({...this.state,bills}));
+  }
+
   render() {
     const { classes } = this.props;
     return (

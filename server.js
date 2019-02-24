@@ -1,9 +1,11 @@
 const express = require('express');
+const bills = require('./server/bills/bills');
 
 const app = express();
 
-const port = 5000;
+app.use('/api/bills', bills);
 
+const port = 5000;
 app.listen(port, function(){
-  console.log(`Server is up and running on port ${port}`);
+  console.log(`The server is up and running on port ${port}`);
 })
