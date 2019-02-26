@@ -48,19 +48,29 @@ const Bill = mongoose.model('bills', billSchema);
 module.exports = class Bills {
   async addBill(inBill){
     let bill = new Bill(inBill);
-    await bill.save();
-    return;
+    return await bill.save();
   }
 
-  editBill(){
-
+  async updateBill(id, inBill){
+    let bill = await Bill.findById(id);
+    bill.status = inBill.status;
+    bill.defaultAmount = inBill.defaultAmount;
+    bill.lastBillPaidDate = inBill.lastBillPaidDate;
+    bill.detailIsRequired = inBill.detailIsRequired;
+    bill.items = inBill.items;
+    return await bill.save();
   }
 
   async getBills(){
     return await Bill.find({});
   }
 
-  deleteBill(){
+  async getBill(id){
+    return await Bill.findById(id);
+  }
 
+  async deleteBill(id){
+    let bill = await Bill.findById(id);
+    return await bill.delete();
   }
 }

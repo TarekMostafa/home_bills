@@ -10,6 +10,10 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/api/bills', billsRouter);
+app.use(function(err, req, res){
+  console.log(err);
+  res.status(500).send(err);
+})
 
 const connection = new mongooseConnection(uri);
 app.listen(port, function(){
