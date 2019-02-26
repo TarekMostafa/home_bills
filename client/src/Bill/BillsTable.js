@@ -44,7 +44,6 @@ class BillsTable extends Component {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <CustomTableCell>Id</CustomTableCell>
             <CustomTableCell>Name</CustomTableCell>
             <CustomTableCell>Frequency</CustomTableCell>
             <CustomTableCell>Currency</CustomTableCell>
@@ -65,8 +64,7 @@ class BillsTable extends Component {
   getTableRows = () => {
     return this.props.bills.map(bill => {
       return (
-        <TableRow className={this.props.classes.row} key={bill.id}>
-          <CustomTableCell>{bill.id}</CustomTableCell>
+        <TableRow className={this.props.classes.row} key={bill._id}>
           <CustomTableCell>{bill.name}</CustomTableCell>
           <CustomTableCell>{bill.frequency}</CustomTableCell>
           <CustomTableCell>{bill.currency}</CustomTableCell>
