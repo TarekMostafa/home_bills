@@ -68,9 +68,12 @@ class BillsTable extends Component {
           <CustomTableCell>{bill.name}</CustomTableCell>
           <CustomTableCell>{bill.frequency}</CustomTableCell>
           <CustomTableCell>{bill.currency}</CustomTableCell>
-          <CustomTableCell>{bill.startDate}</CustomTableCell>
+          <CustomTableCell>{bill.startDate.toString().substring(0,10)}</CustomTableCell>
           <CustomTableCell>{bill.status}</CustomTableCell>
-          <CustomTableCell>{bill.lastPaidDate}</CustomTableCell>
+          <CustomTableCell>
+            {bill.lastPaidDate.toString().substring(0,4) === "1970" ? "" :
+             bill.lastPaidDate.toString().substring(0,10)}
+          </CustomTableCell>
           <CustomTableCell>
           <Tooltip title="Show Bill" aria-label="Show">
             <Fab aria-label="Show"  size="small"

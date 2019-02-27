@@ -9,17 +9,12 @@ class SelectFrequency extends Component {
                 'Annual'],
   }
 
-  constructor(props) {
-    super(props);
-    this.state[props.name] = props.value;
-  }
-
   render () {
     return (
       <React.Fragment>
         <InputLabel htmlFor="Freq">Frequency</InputLabel>
         <Select input={<Input id="Freq" name={this.props.name} readOnly={this.props.readOnly}/>}
-          value={this.state[this.props.name]} onChange={this.handleChange}>
+          value={this.props.value} onChange={this.handleChange}>
           {this.getFrequenciesMenuItem()}
         </Select>
       </React.Fragment>
@@ -38,7 +33,6 @@ class SelectFrequency extends Component {
   }
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
     this.props.onChange(event);
   }
 }

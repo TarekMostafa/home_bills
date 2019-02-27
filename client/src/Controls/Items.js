@@ -2,13 +2,9 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { TextField, Chip, Paper, Grid, FormLabel  } from '@material-ui/core';
+import { Chip, Paper, Grid } from '@material-ui/core';
 
 const styles = theme => ({
-  textField: {
-    marginTop: theme.spacing.unit,
-    width: 200,
-  },
   paper: {
    display: 'flex',
    justifyContent: 'center',
@@ -18,26 +14,10 @@ const styles = theme => ({
 });
 
 class Items extends Component {
-  state = {
-  }
-
-  constructor(props) {
-    super(props);
-    this.state[props.name] = props.value;
-  }
-
   render() {
     const { classes } = this.props;
     return (
       <React.Fragment>
-        <Grid item xs={12}>
-        {
-          this.props.readOnly ? <FormLabel>Items</FormLabel> :
-          <TextField name="txtItem" label="Item" className={classes.textField}
-            margin="normal" helperText="Type the item and then press enter"
-            onKeyPress = { this.onKeyPress }/>
-        }
-        </Grid>
         <Grid item xs={12}>
           <Paper className={classes.paper}> {this.displayItems()} </Paper>
         </Grid>
@@ -45,18 +25,8 @@ class Items extends Component {
     )
   }//render
 
-  onKeyPress = event => {
-    if(event.key === 'Enter'){
-      let items = [...this.state[this.props.name], event.target.value];
-      this.setState({ [this.props.name]: items });
-      this.props.onChange(items);
-      event.target.value = '';
-      event.preventDefault();
-    }
-  }
-
   displayItems = () => {
-    return this.state[this.props.name].map(data => {
+    return this.props.value.map(data => {
       return (
         this.props.readOnly ? <Chip key={data} label={data}/> :
         <Chip key={data} label={data} onDelete={ () => {this.handleDeleteItem(data)} }/>
@@ -65,10 +35,7 @@ class Items extends Component {
   }
 
   handleDeleteItem = data => {
-    let items = [...this.state[this.props.name]];
-    items = items.filter(item => item !== data);
-    this.setState({ [this.props.name]: items });
-    this.props.onChange(items);
+    this.props.onDeleteItem(data);
   }
 }
 
@@ -77,7 +44,7 @@ Items.propTypes = {
   name: PropTypes.string,
   value: PropTypes.arrayOf(PropTypes.string),
   readOnly: PropTypes.bool,
-  onChange: PropTypes.func
+  onDeleteItem: PropTypes.func
 };
 
 Items.defaultProps = {

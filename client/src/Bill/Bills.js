@@ -25,14 +25,18 @@ class BillsComponent extends Component {
     isDialogOpen: false,
     dialogTitle: "",
     dialogType: "",
-    dialogBill: {},
+    dialogBillId: 0,
     dialogAction: null
   };
 
-  componentDidMount() {
+  getBills = () => {
     fetch('/api/bills')
       .then(res => res.json())
-      .then(bills => this.setState({...this.state,bills}));
+      .then(bills => this.setState({bills}));
+  }
+
+  componentDidMount() {
+    this.getBills();
   }
 
   render() {
@@ -59,7 +63,7 @@ class BillsComponent extends Component {
         { this.state.isDialogOpen ?
           <BillDialog title={this.state.dialogTitle} open={true} onClose={this.handleClose}
           onAction={this.state.dialogAction}
-          bill={this.state.dialogBill} type={this.state.dialogType} /> : null
+          id={this.state.dialogBillId} type={this.state.dialogType} /> : null
         }
       </React.Fragment>
     );
@@ -70,8 +74,8 @@ class BillsComponent extends Component {
       isDialogOpen: true,
       dialogTitle: "Add New Bill",
       dialogType: "Add",
-      dialogBill: {},
-      dialogAction: this.handleSave
+      dialogBillId: null,
+      dialogAction: this.handleAdd
     });
   }
 
@@ -81,7 +85,7 @@ class BillsComponent extends Component {
       dialogTitle: "Edit Bill",
       dialogType: "Edit",
       dialogBill:bill,
-      dialogAction: this.handleSave
+      dialogAction: this.handleEdit
     });
   }
 
@@ -90,7 +94,7 @@ class BillsComponent extends Component {
       isDialogOpen: true,
       dialogTitle: "Delete Bill",
       dialogType: "Delete",
-      dialogBill:bill,
+      dialogBillId:bill._id,
       dialogAction: this.handleDelete
     });
   }
@@ -100,7 +104,7 @@ class BillsComponent extends Component {
       isDialogOpen: true,
       dialogTitle: "Show Bill",
       dialogType: "Show",
-      dialogBill:bill,
+      dialogBillId:bill._id,
       dialogAction: null
     });
   }
@@ -111,21 +115,44 @@ class BillsComponent extends Component {
     });
   }
 
-  handleSave = (bill) => {
-    bill.id = this.state.bills.length+1;
-    let bills = [...this.state.bills, bill];
-    this.setState({
-      bills,
-      isDialogOpen: false
+  handleAdd = (bill) => {
+    fetch('/api/bills', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bill)
+    }).then(res => {
+      this.setState({isDialogOpen: false});
+      this.getBills();
+    })
+  }
+
+  handleEdit = (bill) => {
+    fetch('/api/bills/'+bill._id, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bill)
+    }).then(res => {
+      this.setState({isDialogOpen: false});
+      this.getBills();
     })
   }
 
   handleDelete = (bill) => {
-    console.log(bill);
-    let bills = this.state.bills.filter( (item) => item.id !== bill.id );
-    this.setState({
-      bills,
-      isDialogOpen: false
+    fetch('/api/bills/'+bill._id, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => {
+      this.setState({isDialogOpen: false});
+      this.getBills();
     })
   }
 }

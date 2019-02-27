@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
-import { TextField, FormControlLabel, FormControl, Checkbox, Grid, FormHelperText } from '@material-ui/core';
-import _ from 'lodash';
+import { TextField, FormControlLabel, FormControl, Checkbox, Grid, FormHelperText, FormLabel } from '@material-ui/core';
 
 import SelectFrequency from '../Controls/SelectFrequency';
 import SelectCurrency from '../Controls/SelectCurrency';
@@ -32,48 +31,24 @@ const initialState = {
 
 class BillDialog extends React.Component {
   state = {
-    id: 0,
     name: "",
     frequency: "",
     currency: "",
     startDate: "",
     status: "",
     defaultAmount: 0,
-    transRequired: "No",
+    itemsRequired: false,
     items: [],
     ...initialState
   };
 
-  constructor(props) {
-    super(props);
-    if(! _.isNil(props.bill)){
-      if(!_.isNil(props.bill.id)){
-        this.state.id = props.bill.id;
-      }
-      if(!_.isNil(props.bill.name)){
-        this.state.name = props.bill.name;
-      }
-      if(!_.isNil(props.bill.frequency)) {
-        this.state.frequency = props.bill.frequency;
-      }
-      if(!_.isNil(props.bill.currency)) {
-        this.state.currency = props.bill.currency;
-      }
-      if(!_.isNil(props.bill.startDate)) {
-        this.state.startDate = props.bill.startDate;
-      }
-      if(!_.isNil(props.bill.status)) {
-        this.state.status = props.bill.status;
-      }
-      if(!_.isNil(props.bill.defaultAmount)) {
-        this.state.defaultAmount = props.bill.defaultAmount;
-      }
-      if(!_.isNil(props.bill.transRequired)) {
-        this.state.transRequired = props.bill.transRequired;
-      }
-      if(!_.isNil(props.bill.items)) {
-        this.state.items = props.bill.items;
-      }
+  componentDidMount() {
+    if(this.props.id !== null){
+      fetch('/api/bills/'+this.props.id)
+      .then(res => res.json())
+      .then(bill => {
+        this.setState({...bill});
+      });
     }
   }
 
@@ -118,7 +93,7 @@ class BillDialog extends React.Component {
                 <TextField name="startDate" label="Start Date" type="date" required
                   className={classes.textField} InputLabelProps={{shrink: true}}
                   onChange={this.handleChange} error={this.state.startDateError !== ""}
-                  helperText={this.state.startDateError} value={this.state.startDate}
+                  helperText={this.state.startDateError} value={this.state.startDate.toString().substring(0,10)}
                   InputProps={{readOnly: this.isFieldReadOnly()}}/>
               </Grid>
               <Grid item xs={6}>
@@ -131,8 +106,8 @@ class BillDialog extends React.Component {
               <Grid item xs={12}>
                 <FormControlLabel
                   control={
-                    <Checkbox name="transRequired" onChange={this.handleChange}
-                    checked={this.state.transRequired==="Yes"?true:false}
+                    <Checkbox name="itemsRequired" onChange={this.handleChange}
+                    checked={this.state.itemsRequired}
                     disabled={this.isFieldReadOnly()}/>
                   }
                   label="Bill item is required with every bill transaction"
@@ -140,7 +115,15 @@ class BillDialog extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth error={this.state.itemsError !== ""}>
-                  <BillItems name="items" onChange={this.handleItemsChange} value={this.state.items}
+                  <Grid item xs={12}>
+                    {
+                    this.isFieldReadOnly() ? <FormLabel>Items</FormLabel> :
+                    <TextField name="Item" label="Item" className={classes.textField}
+                      margin="normal" helperText="Type the item and then press enter"
+                      onKeyPress = { this.handleAddItem }/>
+                    }
+                  </Grid>
+                  <BillItems name="items" onDeleteItem={this.handleDeleteItem} value={this.state.items}
                   readOnly={this.isFieldReadOnly()}/>
                   <FormHelperText>{this.state.itemsError}</FormHelperText>
                 </FormControl>
@@ -196,8 +179,8 @@ class BillDialog extends React.Component {
       this.setState({statusError: "Bill status is required"});
       isValid = false;
     }
-    // Check Bill Items against transRequired field
-    if(this.state.transRequired==="Yes" && this.state.items.length === 0) {
+    // Check Bill Items against itemsRequired field
+    if(this.state.itemsRequired && this.state.items.length === 0) {
       this.setState({itemsError: "At least one item must be entered"});
       isValid = false;
     }
@@ -222,19 +205,30 @@ class BillDialog extends React.Component {
 
   handleChange = (event) => {
     this.setState({
-      [event.target.name] : (event.target.type==='checkbox' ? (event.target.checked?"Yes":"No") : event.target.value)
+      [event.target.name] : (event.target.type==='checkbox' ? event.target.checked : event.target.value)
     });
   }
 
-  handleItemsChange = (items) => {
+  handleDeleteItem = (data) => {
+    let items = [...this.state.items];
+    items = items.filter(item => item !== data);
     this.setState({items});
+  }
+
+  handleAddItem = event => {
+    if(event.key === 'Enter'){
+      event.preventDefault();
+      let items = [...this.state.items, event.target.value];
+      this.setState({ items });
+      event.target.value = '';
+    }
   }
 
 }
 
 BillDialog.propTypes = {
   classes: PropTypes.object.isRequired,
-  bill: PropTypes.object,
+  id: PropTypes.string,
   open: PropTypes.bool,
   title: PropTypes.string,
   onClose: PropTypes.func,
@@ -243,6 +237,7 @@ BillDialog.propTypes = {
 };
 
 BillDialog.defaultProps = {
+  id: null,
   open: false,
   title: "undefined Title",
   type: "Show"

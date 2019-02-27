@@ -7,17 +7,12 @@ class SelectStatus extends Component {
     statuses: ['Active', 'Inactive', 'Closed']
   }
 
-  constructor(props) {
-    super(props);
-    this.state[props.name] = props.value;
-  }
-
   render () {
     return (
       <React.Fragment>
         <InputLabel htmlFor="status">Status</InputLabel>
         <Select input={<Input id="status" name={this.props.name} readOnly={this.props.readOnly}/>}
-          value={this.state[this.props.name]} onChange={this.handleChange}>
+          value={this.props.value} onChange={this.handleChange}>
           {this.getStatusesMenuItem()}
         </Select>
       </React.Fragment>
@@ -36,7 +31,6 @@ class SelectStatus extends Component {
   }
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
     this.props.onChange(event);
   }
 }

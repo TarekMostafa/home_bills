@@ -10,17 +10,12 @@ class SelectCurrency extends Component {
     ]
   }
 
-  constructor(props) {
-    super(props);
-    this.state[props.name] = props.value;
-  }
-
   render() {
     return (
       <React.Fragment>
         <InputLabel htmlFor="currency">Currency</InputLabel>
         <Select input={<Input name={this.props.name} id="currency" readOnly={this.props.readOnly}/>}
-          value={this.state[this.props.name]} onChange={this.handleChange}>
+          value={this.props.value} onChange={this.handleChange}>
           {this.getCurrenciesMenuItem()}
         </Select>
       </React.Fragment>
@@ -39,7 +34,6 @@ class SelectCurrency extends Component {
   }
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
     this.props.onChange(event);
   }
 }

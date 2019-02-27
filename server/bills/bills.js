@@ -31,11 +31,11 @@ const billSchema = mongoose.Schema({
     type: Number,
     default: 0
   },
-  lastBillPaidDate: {
+  lastPaidDate: {
     type: Date,
     default: 0
   },
-  detailIsRequired: {
+  itemsRequired: {
     type: Boolean,
     default: false
   },
@@ -55,8 +55,8 @@ module.exports = class Bills {
     let bill = await Bill.findById(id);
     bill.status = inBill.status;
     bill.defaultAmount = inBill.defaultAmount;
-    bill.lastBillPaidDate = inBill.lastBillPaidDate;
-    bill.detailIsRequired = inBill.detailIsRequired;
+    bill.lastPaidDate = inBill.lastPaidDate;
+    bill.itemsRequired = inBill.itemsRequired;
     bill.items = inBill.items;
     return await bill.save();
   }
