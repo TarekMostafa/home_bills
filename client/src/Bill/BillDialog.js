@@ -42,9 +42,10 @@ class BillDialog extends React.Component {
     ...initialState
   };
 
-  componentDidMount() {
-    if(this.props.id !== null){
-      fetch('/api/bills/'+this.props.id)
+  constructor(props) {
+    super(props);
+    if(props.id !== null){
+      fetch('/api/bills/'+props.id)
       .then(res => res.json())
       .then(bill => {
         this.setState({...bill});
@@ -55,22 +56,21 @@ class BillDialog extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Dialog disableBackdropClick disableEscapeKeyDown maxWidth="sm"
-        open={this.props.open} scroll={"body"}>
+      <Dialog disableBackdropClick disableEscapeKeyDown maxWidth="sm" open={true} scroll={"body"}>
         <DialogTitle id="confirmation-dialog-title">{this.props.title}</DialogTitle>
         <DialogContent>
           <form>
             <Grid container>
               <Grid item xs={12}>
                 <TextField required name="name" label="Name" className={classes.textField}
-                  margin="normal" onChange={this.handleChange} error={this.state.nameError !== ""}
-                  helperText={this.state.nameError} value={this.state.name}
-                  InputProps={{readOnly: this.isFieldReadOnly()}}/>
+                margin="normal" onChange={this.handleChange} error={this.state.nameError !== ""}
+                helperText={this.state.nameError} value={this.state.name}
+                InputProps={{readOnly: this.isFieldReadOnly("name")}}/>
               </Grid>
               <Grid item xs={6}>
                 <FormControl required className={classes.formControl} error={this.state.freqError !== ""}>
                   <SelectFrequency name="frequency" onChange={this.handleChange} value={this.state.frequency}
-                  readOnly={this.isFieldReadOnly()}/>
+                  readOnly={this.isFieldReadOnly("frequency")}/>
                   <FormHelperText>{this.state.freqError}</FormHelperText>
                 </FormControl>
               </Grid>
@@ -79,52 +79,49 @@ class BillDialog extends React.Component {
               <Grid item xs={6}>
                 <FormControl required className={classes.formControl} error={this.state.currError !== ""}>
                   <SelectCurrency name="currency" onChange={this.handleChange} value={this.state.currency}
-                  readOnly={this.isFieldReadOnly()}/>
+                  readOnly={this.isFieldReadOnly("currency")}/>
                   <FormHelperText>{this.state.currError}</FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
                 <TextField name="defaultAmount" label="Default Amount" type="number"
-                  className={classes.textField} margin="normal"
-                  onChange={this.handleChange} value={this.state.defaultAmount}
-                  InputProps={{readOnly: this.isFieldReadOnly()}}/>
+                className={classes.textField} margin="normal"
+                onChange={this.handleChange} value={this.state.defaultAmount}
+                InputProps={{readOnly: this.isFieldReadOnly("defaultAmount")}}/>
               </Grid>
               <Grid item xs={6}>
                 <TextField name="startDate" label="Start Date" type="date" required
-                  className={classes.textField} InputLabelProps={{shrink: true}}
-                  onChange={this.handleChange} error={this.state.startDateError !== ""}
-                  helperText={this.state.startDateError} value={this.state.startDate.toString().substring(0,10)}
-                  InputProps={{readOnly: this.isFieldReadOnly()}}/>
+                className={classes.textField} InputLabelProps={{shrink: true}}
+                onChange={this.handleChange} error={this.state.startDateError !== ""}
+                helperText={this.state.startDateError} value={this.state.startDate.toString().substring(0,10)}
+                InputProps={{readOnly: this.isFieldReadOnly("startDate")}}/>
               </Grid>
               <Grid item xs={6}>
                 <FormControl required className={classes.formControl} error={this.state.statusError !== ""}>
                   <SelectStatus name="status" onChange={this.handleChange} value={this.state.status}
-                  readOnly={this.isFieldReadOnly()}/>
+                  readOnly={this.isFieldReadOnly("status")}/>
                   <FormHelperText>{this.state.statusError}</FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox name="itemsRequired" onChange={this.handleChange}
-                    checked={this.state.itemsRequired}
-                    disabled={this.isFieldReadOnly()}/>
-                  }
-                  label="Bill item is required with every bill transaction"
-                />
+                <FormControlLabel control={
+                  <Checkbox name="itemsRequired" onChange={this.handleChange}
+                  checked={this.state.itemsRequired}
+                  disabled={this.isFieldReadOnly("itemsRequired")}/>
+                  } label="Bill item is required with every bill transaction"/>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth error={this.state.itemsError !== ""}>
                   <Grid item xs={12}>
                     {
-                    this.isFieldReadOnly() ? <FormLabel>Items</FormLabel> :
+                    this.isFieldReadOnly("items") ? <FormLabel>Items</FormLabel> :
                     <TextField name="Item" label="Item" className={classes.textField}
-                      margin="normal" helperText="Type the item and then press enter"
-                      onKeyPress = { this.handleAddItem }/>
+                    margin="normal" helperText="Type the item and then press enter"
+                    onKeyPress = { this.handleAddItem }/>
                     }
                   </Grid>
                   <BillItems name="items" onDeleteItem={this.handleDeleteItem} value={this.state.items}
-                  readOnly={this.isFieldReadOnly()}/>
+                  readOnly={this.isFieldReadOnly("items")}/>
                   <FormHelperText>{this.state.itemsError}</FormHelperText>
                 </FormControl>
               </Grid>
@@ -141,7 +138,6 @@ class BillDialog extends React.Component {
               { this.props.type === "Delete" ? "Delete" : "Save" }
             </Button>
           }
-
         </DialogActions>
       </Dialog>
     );
@@ -187,11 +183,20 @@ class BillDialog extends React.Component {
     return isValid;
   }
 
-  isFieldReadOnly = () => {
+  isFieldReadOnly = (fieldName) => {
     if(this.props.type === "Add") {
       return false;
     } else if (this.props.type === "Edit") {
-      return false;
+      switch (fieldName) {
+        case "name":
+          return true;
+        case "frequency":
+          return true;
+        case "currency":
+          return true;
+        default:
+          return false;
+      }
     } else {
       return true;
     }
@@ -229,7 +234,6 @@ class BillDialog extends React.Component {
 BillDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   id: PropTypes.string,
-  open: PropTypes.bool,
   title: PropTypes.string,
   onClose: PropTypes.func,
   onAction: PropTypes.func,
@@ -238,8 +242,7 @@ BillDialog.propTypes = {
 
 BillDialog.defaultProps = {
   id: null,
-  open: false,
-  title: "undefined Title",
+  title: "Show Bill",
   type: "Show"
 }
 

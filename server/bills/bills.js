@@ -55,7 +55,7 @@ module.exports = class Bills {
     let bill = await Bill.findById(id);
     bill.status = inBill.status;
     bill.defaultAmount = inBill.defaultAmount;
-    bill.lastPaidDate = inBill.lastPaidDate;
+    bill.startDate = inBill.startDate;
     bill.itemsRequired = inBill.itemsRequired;
     bill.items = inBill.items;
     return await bill.save();

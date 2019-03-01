@@ -3,6 +3,7 @@ import { Grid, Fab, Tooltip, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import BillsTable from './BillsTable';
 import BillDialog from './BillDialog';
@@ -25,7 +26,7 @@ class BillsComponent extends Component {
     isDialogOpen: false,
     dialogTitle: "",
     dialogType: "",
-    dialogBillId: 0,
+    dialogBillId: null,
     dialogAction: null
   };
 
@@ -48,71 +49,55 @@ class BillsComponent extends Component {
             <Typography variant="h4" className={classes.typo}>Bills</Typography>
           </Grid>
           <Grid item xs={2} align='right'>
+            <Tooltip title="Refresh" aria-label="Refresh">
+              <Fab color="secondary" aria-label="Refresh" className={classes.fab}
+              size="small" onClick={this.handleRefresh}>
+                <RefreshIcon />
+              </Fab>
+            </Tooltip>
             <Tooltip title="Add New Bill" aria-label="Add">
               <Fab color="primary" aria-label="Add" className={classes.fab}
-                size="small" onClick={this.handleAddBillDialog}>
+              size="small" onClick={() => this.showBillDialog("Add", null)}>
                 <AddIcon />
               </Fab>
             </Tooltip>
           </Grid>
         </Grid>
         <Grid container alignItems='center' justify='center' direction='column'>
-          <BillsTable bills={this.state.bills} onEditBill={this.handleEditBillDialog}
-          onDeleteBill={this.handleDeleteBillDialog} onShowBill={this.handleShowBillDialog}/>
+          <BillsTable bills={this.state.bills} onEditBill={this.showBillDialog}
+          onDeleteBill={this.showBillDialog} onShowBill={this.showBillDialog}/>
         </Grid>
         { this.state.isDialogOpen ?
-          <BillDialog title={this.state.dialogTitle} open={true} onClose={this.handleClose}
-          onAction={this.state.dialogAction}
-          id={this.state.dialogBillId} type={this.state.dialogType} /> : null
+          <BillDialog title={this.state.dialogTitle} onClose={() => this.showBillDialog("Close", null)}
+          onAction={this.state.dialogAction} id={this.state.dialogBillId} type={this.state.dialogType} />
+          : null
         }
       </React.Fragment>
     );
   } //render
 
-  handleAddBillDialog = () => {
-    this.setState({
-      isDialogOpen: true,
-      dialogTitle: "Add New Bill",
-      dialogType: "Add",
-      dialogBillId: null,
-      dialogAction: this.handleAdd
-    });
-  }
-
-  handleEditBillDialog = (bill) => {
-    this.setState({
-      isDialogOpen: true,
-      dialogTitle: "Edit Bill",
-      dialogType: "Edit",
-      dialogBill:bill,
-      dialogAction: this.handleEdit
-    });
-  }
-
-  handleDeleteBillDialog = (bill) => {
-    this.setState({
-      isDialogOpen: true,
-      dialogTitle: "Delete Bill",
-      dialogType: "Delete",
-      dialogBillId:bill._id,
-      dialogAction: this.handleDelete
-    });
-  }
-
-  handleShowBillDialog = (bill) => {
-    this.setState({
-      isDialogOpen: true,
-      dialogTitle: "Show Bill",
-      dialogType: "Show",
-      dialogBillId:bill._id,
-      dialogAction: null
-    });
-  }
-
-  handleClose = () => {
-    this.setState({
-      isDialogOpen: false
-    });
+  showBillDialog = (type, bill) => {
+    switch (type) {
+      case "Add":
+        this.setState({isDialogOpen: true, dialogTitle: "Add New Bill",
+        dialogType: "Add", dialogBillId: null, dialogAction: this.handleAdd});
+        break;
+      case "Edit":
+        this.setState({isDialogOpen: true, dialogTitle: "Edit Bill",
+        dialogType: "Edit", dialogBillId:bill._id, dialogAction: this.handleEdit});
+        break;
+      case "Delete":
+        this.setState({isDialogOpen: true, dialogTitle: "Delete Bill",
+        dialogType: "Delete", dialogBillId:bill._id, dialogAction: this.handleDelete});
+        break;
+      case "Show":
+        this.setState({isDialogOpen: true, dialogTitle: "Show Bill",
+        dialogType: "Show", dialogBillId:bill._id, dialogAction: null});
+        break;
+      default:
+        this.setState({isDialogOpen: false, dialogTitle: "",
+        dialogType: "", dialogBillId: null, dialogAction: null});
+    }
   }
 
   handleAdd = (bill) => {
@@ -154,6 +139,10 @@ class BillsComponent extends Component {
       this.setState({isDialogOpen: false});
       this.getBills();
     })
+  }
+
+  handleRefresh = () => {
+    this.getBills();
   }
 }
 

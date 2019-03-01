@@ -38,7 +38,6 @@ class BillsTable extends Component {
 
   render() {
     const { classes } = this.props;
-
     return (
       <Paper className={classes.root}>
       <Table className={classes.table}>
@@ -100,15 +99,15 @@ class BillsTable extends Component {
   }//getTableRows
 
   handleEditBill = (bill) => {
-    this.props.onEditBill(bill);
+    this.props.onEditBill("Edit", bill);
   }
 
   handleDeleteBill = (bill) => {
-    this.props.onDeleteBill(bill);
+    this.props.onDeleteBill("Delete", bill);
   }
 
   handleShowBill = (bill) => {
-    this.props.onShowBill(bill);
+    this.props.onShowBill("Show", bill);
   }
 
 }
