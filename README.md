@@ -1,12 +1,12 @@
-This project introduce server side and client side application (full stack javascript)
+This project introduce server side and client side application (full stack javascript).
 
-The server side done using [Node.js](https://nodejs.org/en) and [Express.js](https://expressjs.com).
+The server side was done using [Node.js](https://nodejs.org/en) and [Express.js](https://expressjs.com).
 
-This project used database called [MongoDB](https://www.mongodb.com) and connect to it via [Mongoose](https://mongoosejs.com)
+This project uses database called [MongoDB](https://www.mongodb.com) and connect to it via [Mongoose](https://mongoosejs.com).
 
 The client side was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-The client side also used [Material-UI](https://material-ui.com/), [Redux](https://redux.js.org) and [Redux-Thunk](https://github.com/reduxjs/redux-thunk)
+The client side also uses [Material-UI](https://material-ui.com/), [Redux](https://redux.js.org) and [Redux-Thunk](https://github.com/reduxjs/redux-thunk).
 
 ## Available Scripts
 
@@ -14,7 +14,8 @@ In the project directory, you can run:
 
 ### `npm run server`
 
-Runs the server and you can connect through port 5000
+Runs the server.<br>
+The server is up and running on port 5000.
 
 ### `npm run client`
 
