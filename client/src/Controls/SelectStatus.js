@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 class SelectStatus extends Component {
   state = {
-    statuses: ['Active', 'Inactive', 'Closed']
+    statuses: ['', 'Active', 'Inactive', 'Closed']
   }
 
   render () {

@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var _ = require('lodash');
 
 const billSchema = mongoose.Schema({
   name: {
@@ -61,8 +62,14 @@ module.exports = class Bills {
     return await bill.save();
   }
 
-  async getBills(){
-    return await Bill.find({});
+  async getBills(search){
+    let query = {};
+    if(!_.isNil(search)){
+      if(!_.isNil(search.status) && search.status !== ''){
+        query.status = search.status;
+      }
+    }
+    return await Bill.find(query);
   }
 
   async getBill(id){

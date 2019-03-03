@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Fab, Tooltip, Typography } from '@material-ui/core';
+import { Grid, Fab, Tooltip, Typography, FormControl } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
@@ -7,6 +7,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import BillsTable from './BillsTable';
 import BillDialog from './BillDialog';
+import SelectStatus from '../Controls/SelectStatus';
 
 const styles = theme => ({
   fab: {
@@ -17,7 +18,10 @@ const styles = theme => ({
   },
   typo: {
     marginTop: theme.spacing.unit,
-  }
+  },
+  formControl: {
+    minWidth: 120,
+  },
 });
 
 class BillsComponent extends Component {
@@ -27,13 +31,26 @@ class BillsComponent extends Component {
     dialogTitle: "",
     dialogType: "",
     dialogBillId: null,
-    dialogAction: null
+    dialogAction: null,
+    search: {
+      status: "",
+    }
   };
 
-  getBills = () => {
-    fetch('/api/bills')
-      .then(res => res.json())
-      .then(bills => this.setState({bills}));
+  getBills = (search) => {
+    let url = '/api/bills';
+    if(search !== undefined && search !== null){
+      Object.keys(search).forEach( (key, index) => {
+        if(index===0){
+          url += '?'+key+'='+search[key]
+        } else {
+          url += key+'='+search[key]
+        }
+      });
+    }
+    fetch(url)
+    .then(res => res.json())
+    .then(bills => this.setState({bills}));
   }
 
   componentDidMount() {
@@ -45,10 +62,15 @@ class BillsComponent extends Component {
     return (
       <React.Fragment>
         <Grid container direction='row'>
-          <Grid item xs={10} align='center'>
+          <Grid item xs={8} align='center'>
             <Typography variant="h4" className={classes.typo}>Bills</Typography>
           </Grid>
-          <Grid item xs={2} align='right'>
+          <Grid item xs={3} align='right'>
+            <FormControl className={classes.formControl}>
+              <SelectStatus name="status" onChange={this.handleSearchChange} value={this.state.search.status}/>
+            </FormControl>
+          </Grid>
+          <Grid item xs={1} align='center'>
             <Tooltip title="Refresh" aria-label="Refresh">
               <Fab color="secondary" aria-label="Refresh" className={classes.fab}
               size="small" onClick={this.handleRefresh}>
@@ -110,7 +132,7 @@ class BillsComponent extends Component {
       body: JSON.stringify(bill)
     }).then(res => {
       this.setState({isDialogOpen: false});
-      this.getBills();
+      this.getBills(this.state.search);
     })
   }
 
@@ -124,7 +146,7 @@ class BillsComponent extends Component {
       body: JSON.stringify(bill)
     }).then(res => {
       this.setState({isDialogOpen: false});
-      this.getBills();
+      this.getBills(this.state.search);
     })
   }
 
@@ -137,13 +159,24 @@ class BillsComponent extends Component {
       }
     }).then(res => {
       this.setState({isDialogOpen: false});
-      this.getBills();
+      this.getBills(this.state.search);
     })
   }
 
   handleRefresh = () => {
-    this.getBills();
+    this.getBills(this.state.search);
   }
+
+  handleSearchChange = (event) => {
+    this.setState({
+      search: {
+        [event.target.name] : (event.target.type==='checkbox' ? event.target.checked : event.target.value)
+      }
+    }, () => {
+      this.getBills(this.state.search);
+    });
+  }
+
 }
 
 BillsComponent.propTypes = {

@@ -5,7 +5,7 @@ const router = express.Router();
 const bill = new bills();
 
 router.get('/', function(req, res, next){
-  bill.getBills().then( (data) => {
+  bill.getBills(req.query).then( (data) => {
     res.json(data);
   }).catch( (err) => {
     next(err);
