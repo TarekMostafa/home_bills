@@ -8,6 +8,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import BillsTable from './BillsTable';
 import BillDialog from './BillDialog';
 import SelectStatus from '../Controls/SelectStatus';
+import BillRequest from '../Axios/BillRequest';
 
 const styles = theme => ({
   fab: {
@@ -24,6 +25,8 @@ const styles = theme => ({
   },
 });
 
+const billRequest = new BillRequest();
+
 class BillsComponent extends Component {
   state = {
     bills : [],
@@ -38,18 +41,7 @@ class BillsComponent extends Component {
   };
 
   getBills = (search) => {
-    let url = '/api/bills';
-    if(search !== undefined && search !== null){
-      Object.keys(search).forEach( (key, index) => {
-        if(index===0){
-          url += '?'+key+'='+search[key]
-        } else {
-          url += key+'='+search[key]
-        }
-      });
-    }
-    fetch(url)
-    .then(res => res.json())
+    billRequest.getBills(search)
     .then(bills => this.setState({bills}));
   }
 
@@ -123,44 +115,27 @@ class BillsComponent extends Component {
   }
 
   handleAdd = (bill) => {
-    fetch('/api/bills', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bill)
-    }).then(res => {
+    billRequest.postBill(bill)
+    .then( () => {
       this.setState({isDialogOpen: false});
       this.getBills(this.state.search);
-    })
+    });
   }
 
   handleEdit = (bill) => {
-    fetch('/api/bills/'+bill._id, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bill)
-    }).then(res => {
+    billRequest.putBill(bill)
+    .then( () => {
       this.setState({isDialogOpen: false});
       this.getBills(this.state.search);
-    })
+    });
   }
 
   handleDelete = (bill) => {
-    fetch('/api/bills/'+bill._id, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(res => {
+    billRequest.deleteBill(bill)
+    .then( () => {
       this.setState({isDialogOpen: false});
       this.getBills(this.state.search);
-    })
+    });
   }
 
   handleRefresh = () => {

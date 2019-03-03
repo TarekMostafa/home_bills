@@ -8,6 +8,7 @@ import SelectFrequency from '../Controls/SelectFrequency';
 import SelectCurrency from '../Controls/SelectCurrency';
 import SelectStatus from '../Controls/SelectStatus';
 import BillItems from '../Controls/Items';
+import BillRequest from '../Axios/BillRequest';
 
 const styles = theme => ({
   formControl: {
@@ -29,6 +30,8 @@ const initialState = {
   itemsError: ""
 }
 
+const billRequest = new BillRequest();
+
 class BillDialog extends React.Component {
   state = {
     name: "",
@@ -45,11 +48,8 @@ class BillDialog extends React.Component {
   constructor(props) {
     super(props);
     if(props.id !== null){
-      fetch('/api/bills/'+props.id)
-      .then(res => res.json())
-      .then(bill => {
-        this.setState({...bill});
-      });
+      billRequest.getBill(props.id)
+      .then( bill => this.setState({...bill}));
     }
   }
 
