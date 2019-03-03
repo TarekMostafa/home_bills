@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import { Select, MenuItem, InputLabel, Input } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class SelectCurrency extends Component {
-  state = {
-    Currencies: [
-      {code:'EGP', name:'Egyptian Pound'},
-      {code:'USD', name:'American Dollar'}
-    ]
-  }
-
   render() {
     return (
       <React.Fragment>
@@ -23,7 +17,7 @@ class SelectCurrency extends Component {
   }//render
 
   getCurrenciesMenuItem () {
-      return this.state.Currencies.map((item,index) => {
+      return this.props.currencies.map((item,index) => {
         return (
           <MenuItem value={item.code} key={item.code}>
           {item.name} ({item.code})
@@ -35,6 +29,12 @@ class SelectCurrency extends Component {
 
   handleChange = event => {
     this.props.onChange(event);
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    currencies: state.lookup.currencies
   }
 }
 
@@ -50,4 +50,4 @@ SelectCurrency.defaultProps = {
   readOnly: false
 }
 
-export default SelectCurrency;
+export default connect(mapStateToProps)(SelectCurrency);

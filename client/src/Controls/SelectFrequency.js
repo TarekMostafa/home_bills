@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { Select, MenuItem, InputLabel, Input } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class SelectFrequency extends Component {
-  state = {
-    frequencies : ['None', 'Daily', 'Weekly', 'Monthly',
-                'Bi-Monthly', 'Quarterly', '3 Per Annum', 'Semi-Annual',
-                'Annual'],
-  }
-
   render () {
     return (
       <React.Fragment>
@@ -22,7 +17,7 @@ class SelectFrequency extends Component {
   }//render
 
   getFrequenciesMenuItem () {
-      return this.state.frequencies.map((item,index) => {
+      return this.props.frequencies.map((item,index) => {
         return (
           <MenuItem value={item} key={index}>
           {item}
@@ -34,6 +29,12 @@ class SelectFrequency extends Component {
 
   handleChange = event => {
     this.props.onChange(event);
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    frequencies: state.lookup.frequencies
   }
 }
 
@@ -49,4 +50,4 @@ SelectFrequency.defaultProps = {
   readOnly: false
 }
 
-export default SelectFrequency;
+export default connect(mapStateToProps)(SelectFrequency);

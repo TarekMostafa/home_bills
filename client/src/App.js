@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import NavigationBar from './Navigation/NavigationBar';
 import Home from './Home';
 import Bills from './Bill/Bills';
-import BillsTransactions from './Bill/BillsTransactions';
+import BillsTransactions from './BillTransaction/BillsTransactions';
+import { getStatuses, getFrequencies, getCurrencies } from './Store/Actions/lookupActions';
 
 class App extends Component {
   render() {
@@ -28,6 +29,21 @@ class App extends Component {
       </Router>
     );
   }
+
+  constructor(props) {
+    super(props);
+    props.getFrequencies();
+    props.getCurrencies();
+    props.getStatuses();
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getFrequencies: () => dispatch(getFrequencies()),
+    getCurrencies: () => dispatch(getCurrencies()),
+    getStatuses: () => dispatch(getStatuses())
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -36,4 +52,4 @@ const mapStateToProps = (state) => {
 	}
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
