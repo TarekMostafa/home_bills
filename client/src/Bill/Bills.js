@@ -62,10 +62,10 @@ class BillsComponent extends Component {
     return (
       <React.Fragment>
         <Grid container direction='row'>
-          <Grid item xs={8} align='center'>
+          <Grid item xs={9} align='center'>
             <Typography variant="h4" className={classes.typo}>Bills</Typography>
           </Grid>
-          <Grid item xs={3} align='right'>
+          <Grid item xs={2}>
             <FormControl className={classes.formControl}>
               <SelectStatus name="status" onChange={this.handleSearchChange} value={this.state.search.status}/>
             </FormControl>
