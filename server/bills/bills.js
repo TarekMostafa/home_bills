@@ -1,59 +1,17 @@
-var mongoose = require('mongoose');
-var _ = require('lodash');
+const mongoose = require('mongoose');
+const _ = require('lodash');
 
-const billSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  frequency: {
-    type: String,
-    required: true,
-    enum: ['None', 'Daily', 'Weekly', 'Monthly',
-          'Bi-Monthly', 'Quarterly', '3 Per Annum',
-          'Semi-Annual','Annual']
-  },
-  startDate: {
-    type: Date,
-    required: true
-  },
-  status: {
-    type: String,
-    required: true,
-    enum: ['Active', 'Inactive', 'Closed']
-  },
-  currency: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 3
-  },
-  defaultAmount: {
-    type: Number,
-    default: 0
-  },
-  lastPaidDate: {
-    type: Date,
-    default: 0
-  },
-  itemsRequired: {
-    type: Boolean,
-    default: false
-  },
-  items: {
-    type: [String]
-  }
-});
-const Bill = mongoose.model('bills', billSchema);
+const billModel = require('./billModel');
+const billTransactionModel = require('../billsTransactions/billTransactionModel');
 
-module.exports = class Bills {
+module.exports = class Bill {
   async addBill(inBill){
-    let bill = new Bill(inBill);
+    let bill = new billModel(inBill);
     return await bill.save();
   }
 
   async updateBill(id, inBill){
-    let bill = await Bill.findById(id);
+    let bill = await billModel.findById(id);
     bill.status = inBill.status;
     bill.defaultAmount = inBill.defaultAmount;
     bill.startDate = inBill.startDate;
@@ -69,15 +27,19 @@ module.exports = class Bills {
         query.status = search.status;
       }
     }
-    return await Bill.find(query);
+    return await billModel.find(query);
   }
 
   async getBill(id){
-    return await Bill.findById(id);
+    return await billModel.findById(id);
   }
 
   async deleteBill(id){
-    let bill = await Bill.findById(id);
+    const counter = await billTransactionModel.countDocuments({bill_id:id});
+    if(counter > 0){
+      throw new Error(`you cant delete this bill because it has ${counter} transaction(s)`);
+    }
+    let bill = await billModel.findById(id);
     return await bill.delete();
   }
 }
