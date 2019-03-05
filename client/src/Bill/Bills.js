@@ -9,6 +9,7 @@ import BillsTable from './BillsTable';
 import BillDialog from './BillDialog';
 import SelectStatus from '../Controls/SelectStatus';
 import BillRequest from '../Axios/BillRequest';
+import CustomSnackBar from '../Notifications/CustomSnackBar';
 
 const styles = theme => ({
   fab: {
@@ -37,12 +38,20 @@ class BillsComponent extends Component {
     dialogAction: null,
     search: {
       status: "",
-    }
+    },
+    snackBarMessage: "",
+    snackBarVariant: "info",
   };
 
   getBills = (search) => {
     billRequest.getBills(search)
-    .then(bills => this.setState({bills}));
+    .then(bills => this.setState({bills}))
+    .catch( (error) => {
+      this.setState({
+        snackBarMessage:error.response.data,
+        snackBarVariant: "error"
+      });
+    });
   }
 
   componentDidMount() {
@@ -53,6 +62,8 @@ class BillsComponent extends Component {
     const { classes } = this.props;
     return (
       <React.Fragment>
+        <CustomSnackBar open={this.state.snackBarMessage !== ""} message={this.state.snackBarMessage}
+            onClose={this.handleSnackBarClose} variant={this.state.snackBarVariant}/>
         <Grid container direction='row'>
           <Grid item xs={9} align='center'>
             <Typography variant="h4" className={classes.typo}>Bills</Typography>
@@ -116,25 +127,53 @@ class BillsComponent extends Component {
 
   handleAdd = (bill) => {
     billRequest.postBill(bill)
-    .then( () => {
-      this.setState({isDialogOpen: false});
+    .then( (res) => {
       this.getBills(this.state.search);
+      this.setState({
+        isDialogOpen: false,
+        snackBarMessage: res.data,
+        snackBarVariant: "success"
+      });
+    }).catch( (error) => {
+      this.setState({
+        snackBarMessage:error.response.data,
+        snackBarVariant: "error"
+      });
     });
   }
 
   handleEdit = (bill) => {
     billRequest.putBill(bill)
-    .then( () => {
-      this.setState({isDialogOpen: false});
+    .then( (res) => {
       this.getBills(this.state.search);
+      this.setState({
+        isDialogOpen: false,
+        snackBarMessage: res.data,
+        snackBarVariant: "success"
+      });
+    }).catch( (error) => {
+      this.setState({
+        snackBarMessage:error.response.data,
+        snackBarVariant: "error"
+      });
     });
   }
 
   handleDelete = (bill) => {
     billRequest.deleteBill(bill)
-    .then( () => {
-      this.setState({isDialogOpen: false});
+    .then( (res) => {
       this.getBills(this.state.search);
+      this.setState({
+        isDialogOpen: false,
+        snackBarMessage: res.data,
+        snackBarVariant: "success"
+      });
+    })
+    .catch( (error) => {
+      this.setState({
+        snackBarMessage:error.response.data,
+        snackBarVariant: "error"
+      });
     });
   }
 
@@ -150,6 +189,10 @@ class BillsComponent extends Component {
     }, () => {
       this.getBills(this.state.search);
     });
+  }
+
+  handleSnackBarClose = () => {
+    this.setState({snackBarMessage: ""});
   }
 
 }
